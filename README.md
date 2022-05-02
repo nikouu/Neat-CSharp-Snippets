@@ -1,4 +1,4 @@
-# Neat-CSharp-Snippets
+# Neat C# Snippets
 C# snippets that make me say "this will make a fine addition to my collection".
 
 ## Generating Random with `Random.Shared.Next()`
