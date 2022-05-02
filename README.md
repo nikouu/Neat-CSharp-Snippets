@@ -7,3 +7,6 @@ Just a quick way to get a normal random number. [Documentation](https://docs.mic
 ```csharp
 Random.Shared.Next()
 ```
+
+## Switch Expressions
+See my repo [Switch Expression Examples](https://github.com/nikouu/Switch-Expression-Examples) for gathered code snippets.
