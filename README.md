@@ -1,15 +1,125 @@
 # Neat C# Snippets
 C# snippets that make me say "this will make a fine addition to my collection".
 
-Originally I had another repo [Switch Expression Examples](https://github.com/nikouu/Switch-Expression-Examples) to keep a hold of neat switch expression snippets. However why limit to just that? 
+## Switch Expressions
+See my repo [Switch Expression Examples](https://github.com/nikouu/Switch-Expression-Examples) for gathered code snippets.
 
-Check out any of the other `.md` files for bits that might interest you.
 ## Generating Random with `Random.Shared.Next()`
 Just a quick way to get a normal random number. [Documentation](https://docs.microsoft.com/en-us/dotnet/api/system.random.shared?view=net-6.0) and [initial proposal](https://github.com/dotnet/runtime/issues/43887).
 
 ```csharp
 Random.Shared.Next()
 ```
+## String is null or empty checks
 
-## Switch Expressions
-See my repo [Switch Expression Examples](https://github.com/nikouu/Switch-Expression-Examples) for gathered code snippets.
+### Example 1
+The usual for comparison.
+```csharp
+string.IsNullOrEmpty(str);
+```
+
+### Example 2
+[Via Bartosz Adamczewski](https://twitter.com/badamczewski01/status/1449319543336222725)
+```csharp
+str is not { Length: > 0 };
+```
+
+### Example 3
+[Via Bartosz Adamczewski](https://twitter.com/badamczewski01/status/1449319543336222725)
+```csharp
+str is null or "";
+```
+
+### Example 4
+[Via @elhipernauta](https://twitter.com/elhipernauta/status/1449352457549713415)
+```csharp
+str is null or { Length: 0 }
+```
+
+## Null Checks
+
+Turns out, like a snowball, C# is adding all sorts of way to check for null. 
+
+### Example 1
+
+```csharp
+if (thing != null){
+	thing.Do();
+}
+```
+
+### Example 2
+
+[Via David Fowler](https://twitter.com/davidfowl/status/1421712013936369665)
+
+[`is` operator](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/is)
+
+```csharp
+if (thing is object){
+	thing.Do();
+}
+```
+
+### Example 3
+
+[Via David Fowler](https://twitter.com/davidfowl/status/1421712013936369665)
+
+[`is` operator](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/is)
+
+[`not` via negation pattern](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns#logical-patterns)
+
+```csharp
+if (thing is not null){
+	thing.Do();
+}
+```
+
+### Example 4
+
+[Via David Fowler](https://twitter.com/davidfowl/status/1421712013936369665)
+
+[Property patterns](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns#property-pattern) (I think)
+
+```csharp
+if (thing is {} t0}){
+	thing.Do();
+}
+```
+
+### Example 5
+
+[Via David Fowler](https://twitter.com/davidfowl/status/1421712013936369665)
+
+[Property patterns](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns#property-pattern) (I think)
+
+```csharp
+if (thing is Thing t1}){
+	thing.Do();
+}
+```
+
+### Example 6
+
+[Via David Fowler](https://twitter.com/davidfowl/status/1421717001412562950)
+[Null conditional operator](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators#null-conditional-operators--and-)
+
+```csharp
+thing?.Do()
+```
+
+## String Splitting
+
+These exampels are beyond the usual `string.split()` calls. 
+
+### Example 1
+[Via Guilherme Ferreira](https://twitter.com/gsferreira/status/1522628059056254979)
+
+Using [ranges](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/proposals/csharp-8.0/ranges).
+
+```csharp
+var startIndex = text.IndexOf('-') + 1;
+var endIndex = text.LastIndexOf('-') - startIndex;
+
+var lastPartSubstring = text[startIndex..];
+var middleSubstring = text[startIndex..endIndex];
+```
