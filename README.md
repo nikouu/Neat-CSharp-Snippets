@@ -107,6 +107,29 @@ if (thing is Thing t1}){
 thing?.Do()
 ```
 
+### C# 10 parameter null checking
+`ArgumentNullException.ThrowIfNull()` that we can put at the top of a function to check incoming parameters. 
+ ```csharp
+ArgumentNullException.ThrowIfNull(config);
+```
+
+### Constructor inline null argument checking
+When doing work understanding [System.CommandLine](https://github.com/dotnet/command-line-api) I saw [this type of pattern in the constructor](https://github.com/dotnet/command-line-api/blob/d4cdec2975ece784e6482abbfcf78a0c9516c499/src/System.CommandLine.Hosting/InvocationLifetime.cs#L34):
+
+```csharp
+public void ObjectConstructor(string config){
+    _config = config ?? throw new ArgumentNullException(nameof(config));
+    // ...
+}
+```
+
+### Variable null check at assigning
+I've seen it around, but this [tweet by David Fowler reminded](https://twitter.com/davidfowl/status/1540889628181499904) me to put it here.
+```csharp
+var connectionString = builder.Configuration.GetConnectionString("App") ??
+    throw new InvalidOperationException("Missing connection string.")
+```
+
 ## String Splitting
 
 These examples are beyond the usual `string.split()` calls. 
@@ -123,6 +146,8 @@ var endIndex = text.LastIndexOf('-') - startIndex;
 var lastPartSubstring = text[startIndex..];
 var middleSubstring = text[startIndex..endIndex];
 ```
+
+
 
 ## Images
 There's a reason it's normal to use a NuGet package for image processing in C#. But, if it's quick and dirty, the following examples will do just fine. These are Windows specific APIs.
