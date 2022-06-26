@@ -109,7 +109,7 @@ thing?.Do()
 
 ## String Splitting
 
-These exampels are beyond the usual `string.split()` calls. 
+These examples are beyond the usual `string.split()` calls. 
 
 ### Example 1
 [Via Guilherme Ferreira](https://twitter.com/gsferreira/status/1522628059056254979)
@@ -122,4 +122,56 @@ var endIndex = text.LastIndexOf('-') - startIndex;
 
 var lastPartSubstring = text[startIndex..];
 var middleSubstring = text[startIndex..endIndex];
+```
+
+## Images
+There's a reason it's normal to use a NuGet package for image processing in C#. But, if it's quick and dirty, the following examples will do just fine. These are Windows specific APIs.
+
+### Crop Image (slow)
+
+```csharp
+for (int i = 0; i < image.Width; i += 8)
+    {
+        for (int j = 0; j < image.Height; j += 8)
+        {
+            var cloneRectangle = new Rectangle(i, j, 8, 8);
+            using var tile = image.Clone(cloneRectangle, image.PixelFormat);
+			// work with tile
+        }
+    }
+```
+
+### Crop Image (fast)
+[Via Fopedush](https://stackoverflow.com/questions/9688454/cropping-an-area-from-bitmapdata-with-c-sharp/9691388#9691388)
+
+THis example uses the above link has been applied to crop and save every 8x8 tile in an image.
+```csharp
+public void LoadImage(Bitmap image)
+{
+    // https://stackoverflow.com/a/9691388
+    var rawImage = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, image.PixelFormat);
+    var imageByteCount = rawImage.Stride * rawImage.Height;
+    var imageBytes = new byte[imageByteCount];
+
+    var croppedBitmap = new Bitmap(8, 8);
+
+    Marshal.Copy(rawImage.Scan0, imageBytes, 0, imageByteCount);
+
+    for (int i = 0; i < image.Width; i += 8)
+    {
+        for (int j = 0; j < image.Height; j += 8)
+        {
+            var croppedBytes = GetCroppedImage(imageBytes, rawImage.Stride, i, j, 8, 8);
+            var croppedData = croppedBitmap.LockBits(new Rectangle(0, 0, 8, 8), ImageLockMode.WriteOnly, image.PixelFormat);
+
+            Marshal.Copy(croppedBytes, 0, croppedData.Scan0, croppedBytes.Length);
+
+            croppedBitmap.UnlockBits(croppedData);
+
+            _tiles[i / 8, j / 8] = new Tile(croppedBitmap, i / 8, j / 8);
+        }
+    }
+
+    image.UnlockBits(rawImage);
+}
 ```
