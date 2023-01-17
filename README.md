@@ -205,6 +205,7 @@ public void LoadImage(Bitmap image)
 
 ### Neat pattern matching
 [Via Nick Craver](https://twitter.com/Nick_Craver/status/1508068445644017667)
+
 [For another example, I use it here](https://github.com/nikouu/pokesprite-spritesheet/blob/main/PokespriteGenerator/Decompressor.cs#L25)
 
 Here we use pattern matching to get our variable at the same time as we `while`. And it compliles to the same thing as we would've traditionally done it.
