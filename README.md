@@ -152,6 +152,7 @@ There's a lot of work around `HttpClient` and how to make it run *fast*. As of w
 
 ### Example 1
 [Via Tugberk Ugurlu](https://www.tugberkugurlu.com/archive/efficiently-streaming-large-http-responses-with-httpclient)
+
 [Via John Thiriet](https://johnthiriet.com/efficient-api-calls/)
 
 Using `ReadAsStreamAsync()` and using your JSON converter on that stream instead of `ReadAsStringAsync()` then deserializing the JSON to an object.
@@ -166,6 +167,7 @@ return deserializedObject;
 
 ### Example 2
 [Via Tugberk Ugurlu](https://www.tugberkugurlu.com/archive/streaming-with-newnet-httpclient-and-httpcompletionoption-responseheadersread)
+
 [Via John Thiriet](https://johnthiriet.com/efficient-api-calls/)
 
 Using [`HttpCompletionOption.ResponseHeadersRead`](https://learn.microsoft.com/en-us/dotnet/api/system.net.http.httpcompletionoption?view=net-7.0) with `HttpClient` which does:
