@@ -147,7 +147,39 @@ var lastPartSubstring = text[startIndex..];
 var middleSubstring = text[startIndex..endIndex];
 ```
 
+## HttpClient
+There's a lot of work around `HttpClient` and how to make it run *fast*. As of writing this, the newer [`IHttpClientFactory`](https://learn.microsoft.com/en-us/dotnet/core/extensions/httpclient-factory) class which does neat magic to address some of the downsides of just `HttpClient`. For the sake of this snippet, we'll just look at some quick drop-in speed improvements.
 
+### Example 1
+[Via Tugberk Ugurlu](https://www.tugberkugurlu.com/archive/efficiently-streaming-large-http-responses-with-httpclient)
+[Via John Thiriet](https://johnthiriet.com/efficient-api-calls/)
+
+Using `ReadAsStreamAsync()` and using your JSON converter on that stream instead of `ReadAsStringAsync()` then deserializing the JSON to an object.
+
+```csharp
+using var response = await client.SendAsync("http://localhost:3000");
+var stream = await response.Content.ReadAsStreamAsync();
+
+var deserializedObject = await JsonSerializer.DeserializeAsync<YourDTO>(stream);
+return deserializedObject;
+```
+
+### Example 2
+[Via Tugberk Ugurlu](https://www.tugberkugurlu.com/archive/streaming-with-newnet-httpclient-and-httpcompletionoption-responseheadersread)
+[Via John Thiriet](https://johnthiriet.com/efficient-api-calls/)
+
+Using [`HttpCompletionOption.ResponseHeadersRead`](https://learn.microsoft.com/en-us/dotnet/api/system.net.http.httpcompletionoption?view=net-7.0) with `HttpClient` which does:
+> The operation should complete as soon as a response is available and headers are read. The content is not read yet.
+This means the content isn't pre-buffered.
+
+```csharp
+using var response = await client.SendAsync("http://localhost:3000", HttpCompletionOption.ResponseHeadersRead);
+var stream = await response.Content.ReadAsStreamAsync();
+
+var deserializedObject = await JsonSerializer.DeserializeAsync<string>(stream);
+return deserializedObject;
+```
+This is faster than Example 1, but understand what you're in for.
 
 ## Images
 There's a reason it's normal to use a NuGet package for image processing in C#. But, if it's quick and dirty, the following examples will do just fine. These are Windows specific APIs.
