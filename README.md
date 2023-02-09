@@ -235,9 +235,9 @@ public void LoadImage(Bitmap image)
 }
 ```
 
-## Misc.
+## Patterns
 
-### Neat pattern matching
+### Using less variables
 [Via Nick Craver](https://twitter.com/Nick_Craver/status/1508068445644017667)
 
 [For another example, I use it here](https://github.com/nikouu/pokesprite-spritesheet/blob/main/PokespriteGenerator/Decompressor.cs#L25)
@@ -249,3 +249,33 @@ while(reader.ReadLine() is string line)
 	// work
 }
 ```
+
+### Parsing a kv string
+[Via David Fowler](https://twitter.com/davidfowl/status/1497836113976721408)
+```csharp
+var dict = new Dictionary<string, string>();
+foreach (var p in s.Split(',')
+{
+	if (p.Split('=') is [var k, var v])
+	{
+		dict[k] = v;
+	}
+}
+```
+Note:
+- A KV parser improvement from the [switch expression example 7](https://github.com/nikouu/Switch-Expression-Examples/blob/main/README.md)
+
+### Parsing a CSV
+[Via David Fowler](https://twitter.com/davidfowl/status/1497840510735503364)
+```csharp
+var csv = "title,firstname,lastname\r\n.NET person, David, Fowler";
+foreach (var line in csv.Split('\n'))
+{
+	if (line.Split(',') is [var title, var firstname, var lastName])
+	{
+		Console.WriteLine($"Title is {title}, Name is {firstname} {lastName}");
+	}
+}
+```
+Note:
+- This is an improvement from the one above
