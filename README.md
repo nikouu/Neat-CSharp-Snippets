@@ -279,3 +279,29 @@ foreach (var line in csv.Split('\n'))
 ```
 Note:
 - This is an improvement from the one above
+
+## Proper Disposal 
+
+### Synchronous 
+
+[Via Nick Craver](https://twitter.com/Nick_Craver/status/1551578701564977153)
+
+```csharp
+foo?.Dispose();
+```
+Note:
+- Nothing much to do when synchronous 
+
+### Asynchronous
+
+[Via Nick Craver](https://twitter.com/Nick_Craver/status/1551578701564977153)
+
+```csharp
+if (foo is IAsyncDisposable disposeMe)
+{
+    await disposeMe.DisposeAsync();
+}
+```
+
+Note:
+- This ensures you don't get a null reference exception on the dispose call
