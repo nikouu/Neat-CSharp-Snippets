@@ -305,3 +305,13 @@ if (foo is IAsyncDisposable disposeMe)
 
 Note:
 - This ensures you don't get a null reference exception on the dispose call
+
+## Deconstruction
+
+### Example 1
+
+```csharp
+foreach (var (key, value) in interestingDictionary))
+{
+}
+```
