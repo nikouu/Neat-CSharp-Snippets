@@ -315,3 +315,17 @@ foreach (var (key, value) in interestingDictionary))
 {
 }
 ```
+
+### Empty Collections Initializers
+
+## Array
+[Documentation](https://learn.microsoft.com/en-us/dotnet/api/system.array.empty?view=net-7.0)
+```csharp
+var array = Array.Empty<T>();
+```
+
+## IEnumerable
+[Docuemntation](https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.empty?view=net-7.0)
+```csharp
+var array = Enumerable.Empty<T>();
+```
