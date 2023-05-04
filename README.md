@@ -130,6 +130,48 @@ var connectionString = builder.Configuration.GetConnectionString("App") ??
     throw new InvalidOperationException("Missing connection string.")
 ```
 
+### Nullable bool checks 1
+[Via Mackinnon Buck](https://twitter.com/MackinnonBuck/status/1648856449592987650)
+
+His opinion: *looks confusing and requires parentheses if more conditions are added.*
+```csharp
+if (Model?.BoolProperty ?? false) { }
+```
+
+### Nullable bool checks 2
+[Via Mackinnon Buck](https://twitter.com/MackinnonBuck/status/1648856449592987650)
+
+His opinion: *looks trivially reducible at a glance, but isn't*. (Most popular in given poll)
+
+Note: We're using `== true` because `BoolProperty` is a `bool?`
+```csharp
+if (Model?.BoolProperty == true) { }
+```
+
+### Nullable bool checks 3
+[Via Mackinnon Buck](https://twitter.com/MackinnonBuck/status/1648856449592987650)
+
+His opinion: *has a bunch of syntax.*
+```csharp
+if (Model is { BoolProperty: true }) { }
+```
+
+### Nullable bool checks 4
+[Via Mackinnon Buck](https://twitter.com/MackinnonBuck/status/1648856449592987650)
+
+His opinion: *is long and accesses "Model" twice.*
+```csharp
+if (Model != null && Model.BoolProperty }) { }
+```
+
+### Nullable bool checks 5
+[Via Brandon Minnick](https://twitter.com/TheCodeTraveler/status/1649072939088879618)
+
+His opinion: *I find it has the best readability and requires the least amount of cognitive overhead to understand*
+```csharp
+if (Model?.BoolProperty is true) { }
+```
+
 ## String Splitting
 
 These examples are beyond the usual `string.split()` calls. 
@@ -316,15 +358,15 @@ foreach (var (key, value) in interestingDictionary))
 }
 ```
 
-### Empty Collections Initializers
+## Empty Collections Initializers
 
-## Array
+### Array
 [Documentation](https://learn.microsoft.com/en-us/dotnet/api/system.array.empty?view=net-7.0)
 ```csharp
 var array = Array.Empty<T>();
 ```
 
-## IEnumerable
+### IEnumerable
 [Docuemntation](https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.empty?view=net-7.0)
 ```csharp
 var array = Enumerable.Empty<T>();
