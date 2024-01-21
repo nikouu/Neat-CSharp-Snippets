@@ -64,6 +64,8 @@ if (thing is object){
 
 [Via David Fowler](https://twitter.com/davidfowl/status/1421712013936369665)
 
+[Difference between `is not null` and `!= null` via Marc Gravell](https://twitter.com/marcgravell/status/1652270953143975938)
+
 [`is` operator](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/is)
 
 [`not` via negation pattern](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns#logical-patterns)
