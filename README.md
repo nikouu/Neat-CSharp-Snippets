@@ -373,3 +373,74 @@ var array = Array.Empty<T>();
 ```csharp
 var array = Enumerable.Empty<T>();
 ```
+
+## Stackalloc patterns
+
+### High performance byte/char manipulation 1
+[Via David Fowler](https://twitter.com/davidfowl/status/1520966312817664000)
+
+```csharp
+// Choose a small stack threshold to avoid stack overflow
+const int stackAllocThreshold = 256;
+
+byte[]? pooled = null;
+
+// Either use stack memory or pooled memory
+Span<byte> span = bytesNeeded <= stackAllocThreshold
+    ? stackalloc byte[stackAllocThreshold]
+    : (pooled = ArrayPool<byte>.Shared.Rent(bytesNeeded);
+
+// Write to the span and process it
+var written = Populate(span);
+Process(span[..written]);
+
+// Return the pooled memory if we used it
+if (pooled is not null)
+{
+    ArrayPool<byte>.Shared.Return(pooled);
+}
+```
+
+### High performance byte/char manipulation 2
+[A more in-depth version via David Fowler](https://twitter.com/davidfowl/status/1521008356864843777/photo/1)
+
+```csharp
+using var memory = bytesNeeded <= 256
+    ? new StackOrPooledMemory(stackalloc byte[256])
+    : new StackOrPooledMemory(bytesNeeded);
+
+Span<byte> span = memory.Buffer;
+var written = Populate(span);
+Process(span[written..]);
+
+ref struct StackOrPooledMemory
+{
+    private readonly Span<byte> _span;
+    private byte[]? _arrayPooled;
+    
+    public StackOrPooledMemory(Span<byte> buffer)
+    {
+        _span = buffer;
+        _arrayPooled = null;
+    }
+
+    public StackOrPooledMemory(int size)
+    {
+        var buffer = ArrayPool<byte>.Shared.Rent(size);
+        _arrayPooled = buffer;
+        _span = buffer;
+    }
+
+    public Span<byte> Buffer => _span;
+
+    public void Dispose()
+    {
+        if (_arrayPooled is not null)
+        {
+            var pooled = _arrayPooled;
+            _arrayPooled = null;
+            ArrayPool<byte>.Shared.Return(pooled);
+        }
+    }
+}
+```
