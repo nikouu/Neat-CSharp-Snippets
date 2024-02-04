@@ -376,6 +376,19 @@ var array = Enumerable.Empty<T>();
 
 ## Stackalloc patterns
 
+## Create stack allocated span for under a certain length
+[Via David Fowler](https://twitter.com/davidfowl/status/1703437753390924070)
+
+```csharp
+Span<object?> local = [null, null, null, null];
+Span<object?> args = parameter.Length switch
+{
+    0 => [],
+    <= 4 => local,
+    _ => new object[parameter.Length]
+}
+```
+
 ### High performance byte/char manipulation 1
 [Via David Fowler](https://twitter.com/davidfowl/status/1520966312817664000)
 
