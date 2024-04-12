@@ -478,3 +478,21 @@ await foreach (var item in Task.WhenEach(connectionRequests).WithCancellation(ct
     cts.CancelAfter(timeout);
 }
 ```
+
+## String.Split()
+
+Splitting a string with no allocations. Requires you to know the amount of segments at compile time. 
+
+[Via Sergiy Teplyakov](https://twitter.com/STeplyakov/status/1767748059256312258)
+
+```csharp
+var input = "1;2";
+
+Span<Range> segments = stackalloc Range[2];
+var source = input.AsSpan();
+var segmentsCount = source.Split(segments, ';');
+
+var a = int.Parse(source[segments[0]]);
+var b = int.Parse(source[segments[1]]);
+```
+
