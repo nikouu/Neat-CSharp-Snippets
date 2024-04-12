@@ -457,3 +457,24 @@ ref struct StackOrPooledMemory
     }
 }
 ```
+
+## WhenEach()
+
+### Using cancellation with WhenEach()
+
+[Via David Fowler](https://twitter.com/davidfowl/status/1778091262727577727)
+
+```csharp
+using var cts = new CalcellationTokenSource(timeout);
+await foreach (var item in Task.WhenEach(connectionRequests).WithCancellation(cts.Token))
+{
+    if (!cts.TryReset())
+    {
+        cts.Token.ThrowIfCancellationRequested();
+    }
+    
+    ProcessItem(item.Result);
+    
+    cts.CancelAfter(timeout);
+}
+```
