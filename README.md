@@ -281,6 +281,10 @@ public void LoadImage(Bitmap image)
 
 ## Patterns
 
+> I think the thing makes people uncomfortable with pattern matching in C# is that it pushes variable declaration to the right instead of the left.
+
+[Via David Fowler](https://twitter.com/davidfowl/status/1606503770992832513)
+
 ### Using less variables
 [Via Nick Craver](https://twitter.com/Nick_Craver/status/1508068445644017667)
 
