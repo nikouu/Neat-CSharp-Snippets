@@ -417,6 +417,11 @@ if (pooled is not null)
     ArrayPool<byte>.Shared.Return(pooled);
 }
 ```
+Answer from [Miha Zupan](https://twitter.com/_MihaZupan/status/1521135981356896258) for why to use a flat 256 instead of the `bytesNeeded` for the stack allocation:
+> If you use SkipLocalsInit (perf sensitive code like this should and does), a constant size stackalloc is more efficient. It also means you don't have to explicitly guard against passing a negative value to the stackalloc.
+
+Answer to why 256 is used. You can also see [other places](https://grep.app/search?q=stackalloc&filter[lang][0]=C%23&filter[repo][0]=dotnet/runtime) it's used in .NET:
+> It's conservative to avoid stack overflows.
 
 ### High performance byte/char manipulation 2
 [A more in-depth version via David Fowler](https://twitter.com/davidfowl/status/1521008356864843777/photo/1)
@@ -461,6 +466,11 @@ ref struct StackOrPooledMemory
     }
 }
 ```
+Answer from [David Fowler](https://twitter.com/davidfowl/status/1521011080373293056) as to why no try/finally:
+> We often skip that in high performance code, if the buffer doesn't go back to the pool because of exceptions, it'll get GCed.
+> 
+And [another note](https://twitter.com/davidfowl/status/1521127114124058626):
+> Try/finally prevents inlining
 
 ## WhenEach()
 
