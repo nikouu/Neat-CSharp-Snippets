@@ -379,7 +379,6 @@ var array = Enumerable.Empty<T>();
 ```
 
 ## Stackalloc patterns
-
 ## Create stack allocated span for under a certain length
 [Via David Fowler](https://twitter.com/davidfowl/status/1703437753390924070)
 
@@ -392,7 +391,6 @@ Span<object?> args = parameter.Length switch
     _ => new object[parameter.Length]
 }
 ```
-
 ### High performance byte/char manipulation 1
 [Via David Fowler](https://twitter.com/davidfowl/status/1520966312817664000)
 
@@ -471,6 +469,50 @@ Answer from [David Fowler](https://twitter.com/davidfowl/status/1521011080373293
 > 
 And [another note](https://twitter.com/davidfowl/status/1521127114124058626):
 > Try/finally prevents inlining
+
+### String to GUID
+
+Tries to make the conversion from string to GUID without allocation. However, according to the Twitter replies (see references below) there are more ways to improve this by:
+- Moving off MD5
+- Using UTF16
+- Using `MemoryMarshal.AsBytes` instead of the UTF8 work
+
+```csharp
+Guid ComputeGuid(string stringToConvert)
+{
+    const int maxBytesOnStack = 256;
+
+    var encoding = Encoding.UTF8;
+    var maxByteCount = encoding.GetMaxByteCount(stringToConvert.Length);
+
+    if (maxByteCount <= maxBytesOnStack)
+    {
+        var buffer = (Span<byte>)stackalloc byte[maxBytesOnStack];
+        var written = encoding.GetBytes(stringToConvert, buffer);
+        var utf8Bytes = buffer[..written];
+        return HashData(utf8Bytes);
+    }
+    else
+    {
+        var utf8Bytes = encoding.GetBytes(stringToConvert);
+        return HashData(utf8Bytes);
+    }
+}
+
+Guid HashData(ReadOnlySpan<byte> bytes)
+{
+    var hashBytes = (Span<byte>)stackalloc byte[16];
+    var written = MD5.HashData(bytes, hashBytes);
+
+    return new Guid(hashBytes);
+}
+```
+
+[Via Immo Landwerth (terrajobst)](https://twitter.com/terrajobst/status/1507808952146223106)
+
+[GitHub repo it's used in](https://github.com/terrajobst/apisof.net/blob/31398940e1729982a7f5e56e0656beb55045c249/src/Terrajobst.UsageCrawling/ApiKey.cs#L11)
+
+[My project with benchmarks against variations](https://github.com/nikouu/String-to-GUID-Dotnet-Benchmarking)
 
 ## WhenEach()
 
