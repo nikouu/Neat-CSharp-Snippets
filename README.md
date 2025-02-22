@@ -565,3 +565,23 @@ While `Span<T>.Empty` feels like it shouldn't be a null due to a span being a st
 
 [Via Kevin Gosse](https://x.com/KooKiz/status/1750463285965545725)
 
+## Watch out for unbounded Task waiting
+
+```csharp
+async Task ProcessAsync(List<string> input)
+{
+	var tasks = new List<Task>();
+	foreach(var item in input)
+	{
+		tasks.Add(ProcessItemAsync(item));
+	}
+
+	await Task.WhenAll(tasks);
+}
+```
+
+We don't know the number of items in the incoming `List<T>` meaning we could spin up any number of tasks leading to CPU, IO, or memory problems. 
+
+An alternative could be `Parallel.ForEachAsync<T>`, or any other practical concurrency control similar.
+
+[Via Sergiy Teplyakov](https://x.com/STeplyakov/status/1800571705909481819)
